@@ -1,9 +1,10 @@
 <script lang="ts">
-    import JXG from "$lib/jsxgraphcore.mjs"
+    import JXG from "$lib/jsxgraph/jsxgraphcore.mjs"
     import { onMount } from "svelte"
     let boardDiv:HTMLElement
+    let jsxgraph:any
     onMount(async () => {
-        JXG.JSXGraph.initBoard(boardDiv, {
+        jsxgraph = JXG.JSXGraph.initBoard(boardDiv, {
             boundingbox: [-5, 5, 5, -5],
             axis: true
         }).create('functiongraph', ['exp(x)'])
