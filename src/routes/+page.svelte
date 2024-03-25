@@ -1,14 +1,9 @@
 <script lang="ts">
-    import JXG from "$lib/jsxgraph/jsxgraphcore.mjs"
-    import { onMount } from "svelte"
-    let boardDiv:HTMLElement
-    let jsxgraph:any
-    onMount(async () => {
-        jsxgraph = JXG.JSXGraph.initBoard(boardDiv, {
-            boundingbox: [-5, 5, 5, -5],
-            axis: true
-        }).create('functiongraph', ['exp(x)'])
-    });
+    import Graph from '$lib/Graph.svelte'
+    const points = [
+        [0.4,0.7],
+        [0.1,0.9]
+    ]
 </script>
 
-<div bind:this={boardDiv} style="width:800px;height:600px"/>
+<Graph {points}/>
