@@ -2,9 +2,6 @@
     import Graph from '$lib/Graph.svelte'
     let board:JXG.Board
     let points:JXG.Point[] = []
-    let circles:JXG.Circle[] = []
-    let edges:JXG.Segment[][] = []
-    let faces:JXG.Polygon[][][] = []
     let epsilon = 0.2
     const addPoint = (x:number,y:number) => {
         points = [
@@ -15,73 +12,57 @@
                 {withLabel:false},
             ),
         ]
-        circles = [
-            ...circles,
+        board.create(
+            'circle',
+            [points[points.length-1],()=>epsilon/2],
+            {
+                strokeColor: 'none',
+                fillColor: '#0000ff08'
+            },
+        )
+        points.slice(0,points.length-1).forEach(startPoint=>{
+            let endPoint = points[points.length-1]
             board.create(
-                'circle',
-                [points[points.length-1],()=>epsilon/2],
+                'segment',
+                [startPoint,endPoint],
                 {
-                    strokeColor: 'none',
-                    fillColor: '#0000ff08'
-                },
-            ),
-        ]
-        edges.forEach((pointEdges,i)=>{
-            let p0 = points[i]
-            let p1 = points[points.length-1]
-            edges[i] = [
-                ...pointEdges,
+                    visible: () => {
+                        return Math.pow(startPoint.X()-endPoint.X(),2) +
+                            Math.pow(startPoint.Y()-endPoint.Y(),2) <=
+                            Math.pow(epsilon,2)
+                    },
+                    strokeColor: "#0000ff"
+                }
+            )
+        })
+        points.slice(0,points.length-1).forEach((firstPoint,i)=>{
+            points.slice(i+1,points.length-1).forEach(secondPoint=>{
+                let lastPoint = points[points.length-1]
                 board.create(
-                    'segment',
-                    [p0,p1],
+                    'polygon',
+                    [firstPoint,secondPoint,lastPoint],
                     {
                         visible: () => {
-                            return Math.pow(p0.X()-p1.X(),2) +
-                                Math.pow(p0.Y()-p1.Y(),2) <=
+                            return (
+                                Math.pow(firstPoint.X()-secondPoint.X(),2) +
+                                Math.pow(firstPoint.Y()-secondPoint.Y(),2) <=
                                 Math.pow(epsilon,2)
+                            ) && (
+                                Math.pow(firstPoint.X()-lastPoint.X(),2) +
+                                Math.pow(firstPoint.Y()-lastPoint.Y(),2) <=
+                                Math.pow(epsilon,2)
+                            ) && (
+                                Math.pow(lastPoint.X()-secondPoint.X(),2) +
+                                Math.pow(lastPoint.Y()-secondPoint.Y(),2) <=
+                                Math.pow(epsilon,2)
+                            )
                         },
-                        strokeColor: "#0000ff"
+                        fillColor: "#aa00aa",
+                        fillOpacity: 0.8
                     }
                 )
-            ]
-        })
-        edges = [
-            ...edges,
-            []
-        ]
-        faces.forEach((pointPairs,i)=>{
-            pointPairs.forEach((pairFaces,j)=>{
-                let p0 = points[i]
-                let p1 = points[j]
-                let p2 = points[points.length-1]
-                faces[i][j] = [
-                    ...pairFaces,
-                    board.create(
-                        'polygon',
-                        [p0,p1,p2],
-                        {
-                            visible: () => {
-                                return (Math.pow(p0.X()-p1.X(),2) +
-                                    Math.pow(p0.Y()-p1.Y(),2) <=
-                                    Math.pow(epsilon,2)) &&
-                                    (Math.pow(p0.X()-p2.X(),2) +
-                                    Math.pow(p0.Y()-p2.Y(),2) <=
-                                    Math.pow(epsilon,2)) &&
-                                    (Math.pow(p2.X()-p1.X(),2) +
-                                    Math.pow(p2.Y()-p1.Y(),2) <=
-                                    Math.pow(epsilon,2))
-                            },
-                            fillColor: "#880088",
-                            fillOpacity: 1,
-                        }
-                    )
-                ]
             })
         })
-        faces = [
-            ...faces,
-            [[]]
-        ]
     }
 </script>
 <svelte:head>
