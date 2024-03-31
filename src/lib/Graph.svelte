@@ -16,4 +16,25 @@
     });
 </script>
 
-<div bind:this={boardDiv} style="width:600px;height:600px"/>
+<div 
+    class="graph"
+    bind:this={boardDiv}>
+    <div class="loading">
+        Loading...
+    </div>
+</div>
+
+<style>
+    .graph {
+        width:600px;
+        height:600px;
+        border:solid 1px black;
+    }
+    .loading {
+        width:100%;
+        height:100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
