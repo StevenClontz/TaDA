@@ -5,5 +5,8 @@
         [0.1,0.9]
     ]
 </script>
+<svelte:head>
+    <title>TDA</title>
+</svelte:head>
 
 <Graph {points}/>

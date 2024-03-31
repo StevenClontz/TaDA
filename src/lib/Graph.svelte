@@ -3,15 +3,15 @@
     import { onMount } from "svelte"
     export let points:number[][]
     let boardDiv:HTMLElement
-    let jsxgraph:any
+    let jsxgraph:JXG.Board
     onMount(async () => {
-        const graph = jsxgraph = JXG.JSXGraph.initBoard(boardDiv, {
+        jsxgraph = JXG.JSXGraph.initBoard(boardDiv, {
             boundingbox: [-0.1, 1.1, 1.1, -0.1],
             axis: true,
             showCopyright: false
         })
         points.forEach(p=>{
-            graph.create('point',p,{fixed:true});
+            jsxgraph.create('point',p,{fixed:true});
         })
     });
 </script>
