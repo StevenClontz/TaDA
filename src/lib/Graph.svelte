@@ -1,17 +1,13 @@
 <script lang="ts">
     import JXG from "./jsxgraph/jsxgraphcore.mjs"
     import { onMount } from "svelte"
-    export let points:number[][]
+    export let board:JXG.Board
     let boardDiv:HTMLElement
-    let jsxgraph:JXG.Board
     onMount(async () => {
-        jsxgraph = JXG.JSXGraph.initBoard(boardDiv, {
+        board = JXG.JSXGraph.initBoard(boardDiv, {
             boundingbox: [-0.1, 1.1, 1.1, -0.1],
             axis: true,
             showCopyright: false
-        })
-        points.forEach(p=>{
-            jsxgraph.create('point',p,{fixed:true});
         })
     });
 </script>
