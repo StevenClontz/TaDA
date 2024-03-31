@@ -94,4 +94,5 @@
     Add a random point
 </button>
 
-<input type="number" on:change={()=>board.update()} bind:value={epsilon}/>
+<input type="range" min="0" max="2" bind:value={epsilon} on:input={()=>board.update()} step=".01">
+
