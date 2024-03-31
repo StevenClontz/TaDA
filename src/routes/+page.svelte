@@ -94,5 +94,10 @@
     Add a random point
 </button>
 
+ε={epsilon.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2}
+)}
+
 <input type="range" min="0" max="2" bind:value={epsilon} on:input={()=>board.update()} step=".01">
 
