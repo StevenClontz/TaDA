@@ -7,7 +7,7 @@
     let barcodeBoard:JXG.Board
     let points:JXG.Point[] = []
     let bars:JXG.Segment[] = []
-    let epsilon = 0.2
+    let epsilon = 0.45
 
     const barcodeBoardAttr:Partial<JXG.BoardAttributes> = {
         boundingbox: [-1, 1, 9, -11],
@@ -160,7 +160,6 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
-        console.log(filtration.loopLives(pointsToArray(points)))
     });
 </script>
 
