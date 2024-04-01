@@ -14,6 +14,10 @@
         showCopyright: false,
     }
 
+    const pointsToArray = (ps:JXG.Point[]) => {
+        return ps.map(p=>[p.X(),p.Y()])
+    }
+
     const dist = (p:JXG.Point,q:JXG.Point) => {
         return filtration.dist([p.X(),p.Y()],[q.X(),q.Y()])
     }
@@ -32,7 +36,10 @@
             ...bars,
             barcodeBoard.create(
                 'segment',
-                [[0,0.5-points.length/2],[()=>1.6*5,0.5-points.length/2]],
+                [
+                    [0,0.5-points.length/2],
+                    [()=>filtration.pointAges(pointsToArray(points))[i]*5,0.5-points.length/2]
+                ],
                 {strokeColor:points[i].getAttribute("strokeColor")}
             )
         ]
@@ -97,7 +104,7 @@
                     epsilon = 0
                     pointsBoard.update()
                 }
-            },10)
+            },20)
         } else {
             clearInterval(playIntervalId)
             playIntervalId = undefined
@@ -144,7 +151,7 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
-        console.log(filtration.filtration(points.map(p=>[p.X(),p.Y()])))
+        console.log(filtration.pointAges(points.map(p=>[p.X(),p.Y()])))
     });
 </script>
 
