@@ -36,10 +36,10 @@ export const filtration = (points:number[][]) => {
     })
 }
 
-export const componentLifes = (points:number[][]) => {
+export const componentLives = (points:number[][]) => {
     const es = events(points)
     const f = filtration(points)
-    // the age of a point is the epsilon where it merges into
+    // the age of a component is the epsilon where it merges into
     // a component with a lesser-indexed point
     return points.map((_,i)=>{
         return {
@@ -59,4 +59,50 @@ export const componentLifes = (points:number[][]) => {
             }) || undefined
         }
     })
+}
+
+export const loopLives = (points:number[][]) => {
+    const es = events(points)
+    const f = filtration(points)
+    let lives:{birth:number,death:number,birthCycle:string[]}[] = []
+    f.slice(0,f.length-1).forEach((g,i)=>{
+        // get all cycles
+        const allCycles = graphlib.alg.findCycles(g)
+        console.log(es[i])
+        console.log(allCycles)
+        // drop cycles that have strict subcycles
+        const minCycles = allCycles.filter(c=>{
+            return allCycles.every(d=>{
+                // d is not a strict subset of c
+                return (d.length >= c.length) || d.some(t=>!c.includes(t))
+            })
+        })
+        // cycles of length 3 don't count
+        const cycles = minCycles.filter(c=>c.length>3)
+        cycles.forEach(c=>{
+            // look for existing lives
+            const lifeCandidates = lives
+                .filter(l=>c.every(t=>l.birthCycle.includes(t)))
+                .sort((a,b)=>a.birth-b.birth)
+            if (lifeCandidates.length === 0) {
+                lives.push({
+                    birth:es[i],
+                    death:es[i+1], // we will extend next iteration if it survives
+                    birthCycle:c
+                })
+            }
+            // if marked as dead now, we wil extend
+            if (lifeCandidates[0].death==es[i]) {
+                lifeCandidates[0].death=es[i+1]
+            // otherwise we have a new one
+            } else {
+                lives.push({
+                    birth:es[i],
+                    death:es[i+1], // we will extend next iteration if it survives
+                    birthCycle:c
+                })
+            }
+        })
+    })
+    return lives
 }

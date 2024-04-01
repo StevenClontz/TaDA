@@ -38,12 +38,12 @@
                 'segment',
                 [
                     [
-                        ()=>filtration.componentLifes(pointsToArray(points))[i].birth*5,
+                        ()=>filtration.componentLives(pointsToArray(points))[i].birth*5,
                         0.5-points.length/2
                     ],
                     [
                         ()=>{
-                            const d = filtration.componentLifes(pointsToArray(points))[i].death
+                            const d = filtration.componentLives(pointsToArray(points))[i].death
                             if (d) { return d*5 } else { return 8 }
                         },
                         0.5-points.length/2
@@ -160,6 +160,7 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
+        console.log(filtration.loopLives(pointsToArray(points)))
     });
 </script>
 
