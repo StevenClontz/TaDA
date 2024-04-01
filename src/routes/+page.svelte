@@ -110,6 +110,7 @@
                 dash: 1,
             }
         )
+        pointsBoard.addChild(barcodeBoard)
     });
 </script>
 <svelte:head>
@@ -136,7 +137,7 @@
     max="1.6" 
     step=".01"
     bind:value={epsilon}
-    on:input={()=>pointsBoard.update()&&barcodeBoard.update()}/>
+    on:input={()=>pointsBoard.update()}/>
 
 <style>
     .boards {
