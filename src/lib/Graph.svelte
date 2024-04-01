@@ -2,13 +2,14 @@
     import JXG from "./jsxgraph/jsxgraphcore.mjs"
     import { onMount } from "svelte"
     export let board:JXG.Board
+    export let attr:Partial<JXG.BoardAttributes> = {
+        boundingbox: [-0.1, 1.1, 1.1, -0.1],
+        axis: true,
+        showCopyright: false
+    }
     let boardDiv:HTMLElement
     onMount(async () => {
-        board = JXG.JSXGraph.initBoard(boardDiv, {
-            boundingbox: [-0.1, 1.1, 1.1, -0.1],
-            axis: true,
-            showCopyright: false
-        })
+        board = JXG.JSXGraph.initBoard(boardDiv, attr)
     });
 </script>
 
@@ -22,8 +23,8 @@
 
 <style>
     .graph {
-        width:600px;
-        height:600px;
+        width:400px;
+        height:400px;
         border:solid 1px black;
     }
     .loading {

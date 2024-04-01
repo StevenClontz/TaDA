@@ -1,18 +1,47 @@
 <script lang="ts">
+    import { onMount } from "svelte"
     import Graph from '$lib/Graph.svelte'
-    let board:JXG.Board
+    let pointsBoard:JXG.Board
+    let barcodeBoard:JXG.Board
     let points:JXG.Point[] = []
+    let bars:JXG.Segment[] = []
     let epsilon = 0.2
+    const barcodeBoardAttr:Partial<JXG.BoardAttributes> = {
+        boundingbox: [-1, 1, 9, -11],
+        showCopyright: false,
+    }
+    const dist = (p:JXG.Point,q:JXG.Point) => {
+        return Math.sqrt(Math.pow(p.X()-q.X(),2)+Math.pow(p.Y()-q.Y(),2))
+    }
+    const pointLife = (n:number) => {
+        if (n==0) {
+            return 1.6
+        } else {
+            const p = points[n]
+            return Math.min(...points.slice(0,n).map(q=>{
+                return dist(p,q)
+            }))
+        }
+    }
     const addPoint = (x:number,y:number) => {
         points = [
             ...points,
-            board.create(
+            pointsBoard.create(
                 'point',
                 [x,y],
                 {withLabel:false},
             ),
         ]
-        board.create(
+        const i = points.length-1
+        bars = [
+            ...bars,
+            barcodeBoard.create(
+                'segment',
+                [[0,0.5-points.length/2],[()=>pointLife(i)*5,0.5-points.length/2]],
+                {strokeColor:points[i].getAttribute("strokeColor")}
+            )
+        ]
+        pointsBoard.create(
             'circle',
             [points[points.length-1],()=>epsilon/2],
             {
@@ -22,7 +51,7 @@
         )
         points.slice(0,points.length-1).forEach(startPoint=>{
             let endPoint = points[points.length-1]
-            board.create(
+            pointsBoard.create(
                 'segment',
                 [startPoint,endPoint],
                 {
@@ -38,7 +67,7 @@
         points.slice(0,points.length-1).forEach((firstPoint,i)=>{
             points.slice(i+1,points.length-1).forEach(secondPoint=>{
                 let lastPoint = points[points.length-1]
-                board.create(
+                pointsBoard.create(
                     'polygon',
                     [firstPoint,secondPoint,lastPoint],
                     {
@@ -64,14 +93,35 @@
             })
         })
     }
+    const addRandomPoint = () => {
+        addPoint(Math.random(),Math.random())
+    }
+    onMount(async () => {
+        addPoint(0.23,0.41)
+        addPoint(0.09,0.78)
+        addPoint(0.87,0.78)
+        addPoint(0.72,0.33)
+        addPoint(0.5,0.81)
+        barcodeBoard.create(
+            "segment",
+            [[()=>epsilon*5,0],[()=>epsilon*5,-10]],
+            {
+                strokeColor: "gray",
+                dash: 1,
+            }
+        )
+    });
 </script>
 <svelte:head>
     <title>TDA</title>
 </svelte:head>
 
-<Graph bind:board={board}/>
+<div class="boards">
+    <Graph bind:board={pointsBoard}/>
+    <Graph bind:board={barcodeBoard} attr={barcodeBoardAttr}/>
+</div>
 
-<button on:click={()=>addPoint(Math.random(),Math.random())}>
+<button on:click={()=>addRandomPoint()} disabled={points.length>=10}>
     Add a random point
 </button>
 
@@ -80,5 +130,16 @@
     maximumFractionDigits: 2}
 )}
 
-<input type="range" min="0" max="2" bind:value={epsilon} on:input={()=>board.update()} step=".01">
+<input 
+    type="range" 
+    min="0" 
+    max="1.6" 
+    step=".01"
+    bind:value={epsilon}
+    on:input={()=>pointsBoard.update()&&barcodeBoard.update()}/>
 
+<style>
+    .boards {
+        display: flex;
+    }
+</style>
