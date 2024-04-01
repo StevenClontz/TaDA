@@ -16,7 +16,7 @@
     const dist = (p:JXG.Point,q:JXG.Point) => {
         return Math.sqrt(Math.pow(p.X()-q.X(),2)+Math.pow(p.Y()-q.Y(),2))
     }
-    
+
     const addPoint = (x:number,y:number) => {
         points = [
             ...points,
@@ -92,10 +92,31 @@
         addPoint(0.5,0.81)
         barcodeBoard.create(
             "segment",
-            [[()=>epsilon*5,0],[()=>epsilon*5,-10]],
+            [[()=>epsilon*5,0.5],[()=>epsilon*5,-10]],
             {
-                strokeColor: "gray",
+                strokeColor: "#0000ff44",
                 dash: 1,
+            }
+        )
+        barcodeBoard.create(
+            "segment",
+            [[0,0.5],[0,-10]],
+            {
+                strokeColor: "black",
+                strokeWidth: 1,
+            }
+        )
+        barcodeBoard.create(
+            "arrow",
+            [[0,-10],[8,-10]],
+            {
+                strokeColor: "black",
+                strokeWidth: 1,
+                name: "ε",
+                withLabel: true,
+                label: {
+                    position: 'last'
+                }
             }
         )
         pointsBoard.addChild(barcodeBoard)
