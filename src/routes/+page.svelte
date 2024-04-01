@@ -183,9 +183,9 @@
 
 <button on:click={()=>togglePlayEpsilon()}>
     {#if playIntervalId}
-        ⏸
+        ⏸️
     {:else}
-        ▶
+        ▶️
     {/if}
 </button>
 
