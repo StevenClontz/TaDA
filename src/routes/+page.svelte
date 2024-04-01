@@ -85,11 +85,15 @@
     }
 
     onMount(async () => {
-        addPoint(0.23,0.41)
-        addPoint(0.09,0.78)
-        addPoint(0.87,0.78)
-        addPoint(0.72,0.33)
-        addPoint(0.5,0.81)
+        addPoint(0.09,0.81)
+        addPoint(0.21,0.38)
+        addPoint(0.32,0.99)
+        addPoint(0.39,0.21)
+        addPoint(0.50,0.59)
+        addPoint(0.59,0.18)
+        addPoint(0.61,0.91)
+        addPoint(0.88,0.39)
+        addPoint(0.91,0.82)
         barcodeBoard.create(
             "segment",
             [[()=>epsilon*5,0.5],[()=>epsilon*5,-10]],
@@ -132,7 +136,7 @@
     <Graph bind:board={barcodeBoard} attr={barcodeBoardAttr}/>
 </div>
 
-<button on:click={()=>addRandomPoint()} disabled={points.length>=10}>
+<button on:click={()=>addRandomPoint()} disabled={points.length>=15}>
     Add a random point
 </button>
 
