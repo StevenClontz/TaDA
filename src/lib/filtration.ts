@@ -36,24 +36,27 @@ export const filtration = (points:number[][]) => {
     })
 }
 
-export const pointAges = (points:number[][]) => {
+export const componentLifes = (points:number[][]) => {
     const es = events(points)
     const f = filtration(points)
     // the age of a point is the epsilon where it merges into
     // a component with a lesser-indexed point
     return points.map((_,i)=>{
-        return es.find((_,j)=>{
-            const compStr = graphlib.alg
-                .components(f[j])
-                .find(arr=>arr.includes(`${i}`))
-            if (compStr) {
-                let comp = compStr
-                    .map(n=>Number(n))
-                    .sort()
-                if (comp[0]<i) {
-                    return true
+        return {
+            birth: 0,
+            death: es.find((_,j)=>{
+                const compStr = graphlib.alg
+                    .components(f[j])
+                    .find(arr=>arr.includes(`${i}`))
+                if (compStr) {
+                    let comp = compStr
+                        .map(n=>Number(n))
+                        .sort()
+                    if (comp[0]<i) {
+                        return true
+                    }
                 }
-            }
-        }) || 1.6
+            }) || undefined
+        }
     })
 }

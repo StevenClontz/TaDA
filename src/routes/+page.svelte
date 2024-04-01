@@ -37,8 +37,17 @@
             barcodeBoard.create(
                 'segment',
                 [
-                    [0,0.5-points.length/2],
-                    [()=>filtration.pointAges(pointsToArray(points))[i]*5,0.5-points.length/2]
+                    [
+                        ()=>filtration.componentLifes(pointsToArray(points))[i].birth*5,
+                        0.5-points.length/2
+                    ],
+                    [
+                        ()=>{
+                            const d = filtration.componentLifes(pointsToArray(points))[i].death
+                            if (d) { return d*5 } else { return 8 }
+                        },
+                        0.5-points.length/2
+                    ]
                 ],
                 {strokeColor:points[i].getAttribute("strokeColor")}
             )
@@ -151,7 +160,6 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
-        console.log(filtration.pointAges(points.map(p=>[p.X(),p.Y()])))
     });
 </script>
 
