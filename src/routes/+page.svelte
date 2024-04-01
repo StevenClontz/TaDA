@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import Graph from '$lib/Graph.svelte'
+    import * as filtration from "$lib/filtration"
 
     let pointsBoard:JXG.Board
     let barcodeBoard:JXG.Board
@@ -14,7 +15,7 @@
     }
 
     const dist = (p:JXG.Point,q:JXG.Point) => {
-        return Math.sqrt(Math.pow(p.X()-q.X(),2)+Math.pow(p.Y()-q.Y(),2))
+        return filtration.dist([p.X(),p.Y()],[q.X(),q.Y()])
     }
 
     const addPoint = (x:number,y:number) => {
@@ -143,6 +144,7 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
+        console.log(filtration.filtration(points.map(p=>[p.X(),p.Y()])))
     });
 </script>
 
