@@ -84,6 +84,25 @@
         addPoint(Math.random(),Math.random())
     }
 
+    let playIntervalId : number|undefined = undefined
+
+    const togglePlayEpsilon = () => {
+        if (!playIntervalId) {
+            playIntervalId = setInterval(()=>{
+                if (epsilon < 1.6) {
+                    epsilon += 0.001
+                    pointsBoard.update()
+                } else {
+                    epsilon = 0
+                    pointsBoard.update()
+                }
+            },10)
+        } else {
+            clearInterval(playIntervalId)
+            playIntervalId = undefined
+        }
+    }
+
     onMount(async () => {
         addPoint(0.09,0.81)
         addPoint(0.21,0.38)
@@ -141,8 +160,8 @@
 </button>
 
 ε={epsilon.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2}
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3}
 )}
 
 <input 
@@ -152,6 +171,14 @@
     step=".01"
     bind:value={epsilon}
     on:input={()=>pointsBoard.update()}/>
+
+<button on:click={()=>togglePlayEpsilon()}>
+    {#if playIntervalId}
+        ⏸
+    {:else}
+        ▶
+    {/if}
+</button>
 
 <style>
     .boards {
