@@ -1,28 +1,22 @@
 <script lang="ts">
     import { onMount } from "svelte"
     import Graph from '$lib/Graph.svelte'
+
     let pointsBoard:JXG.Board
     let barcodeBoard:JXG.Board
     let points:JXG.Point[] = []
     let bars:JXG.Segment[] = []
     let epsilon = 0.2
+
     const barcodeBoardAttr:Partial<JXG.BoardAttributes> = {
         boundingbox: [-1, 1, 9, -11],
         showCopyright: false,
     }
+
     const dist = (p:JXG.Point,q:JXG.Point) => {
         return Math.sqrt(Math.pow(p.X()-q.X(),2)+Math.pow(p.Y()-q.Y(),2))
     }
-    const pointLife = (n:number) => {
-        if (n==0) {
-            return 1.6
-        } else {
-            const p = points[n]
-            return Math.min(...points.slice(0,n).map(q=>{
-                return dist(p,q)
-            }))
-        }
-    }
+    
     const addPoint = (x:number,y:number) => {
         points = [
             ...points,
@@ -37,7 +31,7 @@
             ...bars,
             barcodeBoard.create(
                 'segment',
-                [[0,0.5-points.length/2],[()=>pointLife(i)*5,0.5-points.length/2]],
+                [[0,0.5-points.length/2],[()=>1.6*5,0.5-points.length/2]],
                 {strokeColor:points[i].getAttribute("strokeColor")}
             )
         ]
@@ -56,9 +50,7 @@
                 [startPoint,endPoint],
                 {
                     visible: () => {
-                        return Math.pow(startPoint.X()-endPoint.X(),2) +
-                            Math.pow(startPoint.Y()-endPoint.Y(),2) <=
-                            Math.pow(epsilon,2)
+                        return dist(startPoint,endPoint) <= epsilon
                     },
                     strokeColor: "#0000ff"
                 }
@@ -73,17 +65,11 @@
                     {
                         visible: () => {
                             return (
-                                Math.pow(firstPoint.X()-secondPoint.X(),2) +
-                                Math.pow(firstPoint.Y()-secondPoint.Y(),2) <=
-                                Math.pow(epsilon,2)
+                                dist(firstPoint,secondPoint) <= epsilon
                             ) && (
-                                Math.pow(firstPoint.X()-lastPoint.X(),2) +
-                                Math.pow(firstPoint.Y()-lastPoint.Y(),2) <=
-                                Math.pow(epsilon,2)
+                                dist(firstPoint,lastPoint) <= epsilon
                             ) && (
-                                Math.pow(lastPoint.X()-secondPoint.X(),2) +
-                                Math.pow(lastPoint.Y()-secondPoint.Y(),2) <=
-                                Math.pow(epsilon,2)
+                                dist(secondPoint,lastPoint) <= epsilon
                             )
                         },
                         fillColor: "#aa00aa",
@@ -93,9 +79,11 @@
             })
         })
     }
+
     const addRandomPoint = () => {
         addPoint(Math.random(),Math.random())
     }
+
     onMount(async () => {
         addPoint(0.23,0.41)
         addPoint(0.09,0.78)
@@ -113,8 +101,9 @@
         pointsBoard.addChild(barcodeBoard)
     });
 </script>
+
 <svelte:head>
-    <title>TDA</title>
+    <title>TaDA!</title>
 </svelte:head>
 
 <div class="boards">
