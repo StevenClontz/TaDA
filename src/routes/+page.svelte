@@ -28,7 +28,10 @@
             pointsBoard.create(
                 'point',
                 [x,y],
-                {withLabel:false},
+                {
+                    withLabel:true,
+                    name:`P_{${points.length}}`
+                },
             ),
         ]
         const i = points.length-1
@@ -125,11 +128,12 @@
         addPoint(0.21,0.38)
         addPoint(0.32,0.99)
         addPoint(0.39,0.21)
-        addPoint(0.50,0.59)
+        addPoint(0.54,0.54)
         addPoint(0.59,0.18)
         addPoint(0.61,0.91)
         addPoint(0.88,0.39)
         addPoint(0.91,0.82)
+        addPoint(0.1,0.5)
         barcodeBoard.create(
             "segment",
             [[()=>epsilon*5,0.5],[()=>epsilon*5,-10]],
@@ -160,6 +164,17 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
+        console.log(filtration.loopLives(pointsToArray(points)))
+        filtration.filtration(pointsToArray(points)).forEach(g=>console.log(filtration.minCycles(g).filter(c=>c.length>3)))
+        filtration.loopLives(pointsToArray(points)).forEach((l,i)=>{
+            barcodeBoard.create(
+                "segment",
+                [[l.birth*5,-9.5+i/2],[l.death*5,-9.5+i/2]],
+                {
+                    strokeColor: "blue",
+                }
+            )
+        })
     });
 </script>
 
@@ -176,10 +191,14 @@
     Add a random point
 </button>
 
-ε={epsilon.toLocaleString(undefined, {
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3}
-)}
+ε=
+<input
+    type="number"
+    min="0" 
+    max="1.6" 
+    step=".001" 
+    bind:value={epsilon}
+    style="width:5em"/>
 
 <input 
     type="range" 
@@ -188,6 +207,7 @@
     step=".01"
     bind:value={epsilon}
     on:input={()=>pointsBoard.update()}/>
+
 
 <button on:click={()=>togglePlayEpsilon()}>
     {#if playIntervalId}
