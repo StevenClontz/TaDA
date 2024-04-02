@@ -1,6 +1,6 @@
 import Graph from 'graphology'
 import {connectedComponents} from 'graphology-components'
-import {dfsFromNode} from 'graphology-traversal'
+// import {dfsFromNode} from 'graphology-traversal'
 import { subgraph } from 'graphology-operators'
 
 export const dist = (p:number[],q:number[]) => {
@@ -44,22 +44,21 @@ export const minCycles = (g:Graph) => {
     const nodes = g.nodes()
     nodes.forEach((n,i)=>{
         const sg = subgraph(g,nodes.slice(i))
-        let cycleCandidate:string[] = []
-        dfsFromNode(sg,n,(m,_,depth)=>{
-            cycleCandidate = cycleCandidate.slice(0,depth)
-            cycleCandidate.push(m)
-            if (depth >= 1 && sg.neighbors(m).some(k=>sg.neighbors(n).includes(k))) {
-                sg.neighbors(m).filter(k=>sg.neighbors(n).includes(k)).forEach(k=>{
-                    if (!cycleCandidate.includes(k)) {
-                        const newCycle = [...cycleCandidate,k].toSorted()
-                        if (!cycles.map(c=>JSON.stringify(c)).includes(JSON.stringify(newCycle))) {
-                            cycles.push(newCycle)
-                        }
-                    }
+        const checkCandidate = (c:string[]) => {
+            // too short
+            if (c.length===0) { return }
+            // already found a smaller one
+            if (cycles.some(d=>d.every(l=>c.includes(l)))) { return }
+            // this works
+            if (c.length>2 && sg.neighbors(c[c.length-1]).includes(c[0])) {
+                cycles = [...cycles.filter(d=>!c.every(l=>d.includes(l))),c]
+            } else {
+                sg.neighbors(c[c.length-1]).filter(n=>!c.includes(n)).forEach(n=>{
+                    checkCandidate([...c,n])
                 })
-                return true
             }
-        })
+        }
+        checkCandidate([n])
     })
     return cycles
 }

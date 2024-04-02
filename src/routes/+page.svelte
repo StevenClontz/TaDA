@@ -140,6 +140,7 @@
             {
                 strokeColor: "#0000ff44",
                 dash: 1,
+                strokeWidth: 1,
             }
         )
         barcodeBoard.create(
@@ -164,17 +165,15 @@
             }
         )
         pointsBoard.addChild(barcodeBoard)
-        console.log(filtration.loopLives(pointsToArray(points)))
-        filtration.filtration(pointsToArray(points)).forEach(g=>console.log(filtration.minCycles(g).filter(c=>c.length>3)))
-        filtration.loopLives(pointsToArray(points)).forEach((l,i)=>{
-            barcodeBoard.create(
-                "segment",
-                [[l.birth*5,-9.5+i/2],[l.death*5,-9.5+i/2]],
-                {
-                    strokeColor: "blue",
-                }
-            )
-        })
+        // filtration.loopLives(pointsToArray(points)).forEach((l,i)=>{
+        //     barcodeBoard.create(
+        //         "segment",
+        //         [[l.birth*5,-9.5+i/2],[l.death*5,-9.5+i/2]],
+        //         {
+        //             strokeColor: "blue",
+        //         }
+        //     )
+        // })
     });
 </script>
 
@@ -196,8 +195,11 @@
     type="number"
     min="0" 
     max="1.6" 
-    step=".001" 
-    bind:value={epsilon}
+    step=".001"
+    on:input={e => (epsilon = Number(e.currentTarget.value))}
+    value={epsilon.toLocaleString(undefined,{
+        maximumFractionDigits:3,
+    })}
     style="width:5em"/>
 
 <input 
