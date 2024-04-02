@@ -1,5 +1,7 @@
 import Graph from 'graphology'
 import {connectedComponents} from 'graphology-components'
+import {dfsFromNode} from 'graphology-traversal'
+import { subgraph } from 'graphology-operators'
 
 export const dist = (p:number[],q:number[]) => {
     return Math.sqrt(Math.pow(p[0]-q[0],2)+Math.pow(p[1]-q[1],2))
@@ -35,6 +37,31 @@ export const filtration = (points:number[][]) => {
         })
         return g
     })
+}
+
+const minCycles = (g:Graph) => {
+    let cycles:string[][] = []
+    const nodes = g.nodes()
+    nodes.forEach((n,i)=>{
+        const sg = subgraph(g,nodes.slice(i))
+        let cycleCandidate:string[] = []
+        dfsFromNode(sg,n,(m,_,depth)=>{
+            cycleCandidate = cycleCandidate.slice(0,depth)
+            cycleCandidate.push(m)
+            if (depth >= 1 && sg.neighbors(m).some(k=>sg.neighbors(n).includes(k))) {
+                sg.neighbors(m).filter(k=>sg.neighbors(n).includes(k)).forEach(k=>{
+                    if (!cycleCandidate.includes(k)) {
+                        const newCycle = [...cycleCandidate,k].toSorted()
+                        if (!cycles.map(c=>JSON.stringify(c)).includes(JSON.stringify(newCycle))) {
+                            cycles.push(newCycle)
+                        }
+                    }
+                })
+                return true
+            }
+        })
+    })
+    return cycles
 }
 
 export const componentLives = (points:number[][]) => {
